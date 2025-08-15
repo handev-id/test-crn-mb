@@ -64,7 +64,7 @@ const NewMessagePage: React.FC = () => {
   }, []);
 
   const onSubmit = async (data: FormData) => {
-    console.log(data);
+    console.log(data)
     socket.emit(
       "send-message",
       {
@@ -73,7 +73,7 @@ const NewMessagePage: React.FC = () => {
         senderId: Number(data.senderId),
         text: data.text,
         attachment: (await data.attachment?.[0]?.arrayBuffer()) || null,
-        webhookMessageReplyId: null,
+        webhookMessageReplyId: data.webhookMessageReplyId || null,
       },
       (result: any) => {
         console.log(result);
@@ -132,6 +132,11 @@ const NewMessagePage: React.FC = () => {
           type="number"
           {...register("senderId", { required: true })}
           placeholder="Sender ID"
+        />
+        <input
+          type="text"
+          {...register("webhookMessageReplyId")}
+          placeholder="WEBHOOK MESSAGE REPLY ID"
         />
         <input
           {...register("text", { required: true })}

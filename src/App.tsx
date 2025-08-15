@@ -7,9 +7,7 @@ const WaEventsPage: React.FC = () => {
 
   useEffect(() => {
     socket.on("connection-status", (data) => {
-      if (data.id === deviceId) {
-        console.log("Connection Status:", data);
-      }
+      console.log("Connection Status:", data);
     });
 
     socket.emit("join-wa", deviceId);
