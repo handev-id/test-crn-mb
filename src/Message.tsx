@@ -20,6 +20,7 @@ type FormValues = {
 };
 
 const NewMessagePage: React.FC = () => {
+  const userId = Number(window.location.href.split("/").pop());
   const bodyMsgs = useRef<HTMLDivElement>(null);
   const [webhookMessageReplyId, setWebhookMessageReplyId] = useState<
     string | null
@@ -157,8 +158,25 @@ const NewMessagePage: React.FC = () => {
         });
       }
     );
-    conversations.process({});
 
+    socket.on("conversation-status", (conv: Conversation) => {
+      console.log(conv);
+      const currentConvs = getValues("conversations");
+      const convIdx = currentConvs.findIndex((c) => c.id === conv.id);
+
+      if (conv.status === "unassigned") {
+        insertConversation(0, conv);
+        return;
+      }
+
+      if (conv.agentId === userId && conv.status === "assigned") {
+        updateConversation(convIdx, conv);
+      } else {
+        removeConversation(convIdx);
+      }
+    });
+
+    conversations.process({});
     return () => {
       socket.off("new-message", handler);
       if (watch("activeConversation")?.id) {
@@ -220,6 +238,16 @@ const NewMessagePage: React.FC = () => {
                       {conv.unreadCount}
                     </span>
                   )}
+
+                  <span
+                    className={`${
+                      conv.status === "assigned"
+                        ? "bg-blue-500 text-white"
+                        : "bg-yellow-200 text-black"
+                    } ml-2 px-2 py-0.5 text-xs rounded-full`}
+                  >
+                    {conv.status}
+                  </span>
                 </div>
               </div>
             </li>
@@ -239,7 +267,7 @@ const NewMessagePage: React.FC = () => {
       </div>
 
       <div className="flex-1 flex flex-col">
-        <div className="p-6 border-b">
+        <div className="p-3 border-b">
           <h1 className="text-2xl font-bold">
             {!watch("activeConversation")
               ? "No Active Conversation"
@@ -249,10 +277,10 @@ const NewMessagePage: React.FC = () => {
           </h1>
           <p>conversation {watch("activeConversation")?.id}</p>
         </div>
-
         <div ref={bodyMsgs} className="flex-1 p-6 overflow-y-auto bg-gray-200">
           {messagesFields.map((msg: Message) => {
             const isUser = msg.senderType === "user";
+            const reply = msg.webhookMessageReply;
 
             return (
               <div
@@ -262,7 +290,7 @@ const NewMessagePage: React.FC = () => {
                   isUser ? "justify-end" : "justify-start"
                 }`}
               >
-                {/* Avatar untuk contact */}
+                {/* Avatar contact */}
                 {!isUser && (
                   <img
                     src={msg.sender?.avatar?.url || "/default-avatar.png"}
@@ -289,7 +317,29 @@ const NewMessagePage: React.FC = () => {
                         : "bg-white text-gray-800 rounded-bl-none"
                     }`}
                   >
-                    {/* Text */}
+                    {/* Reply preview */}
+                    {reply && (
+                      <div
+                        className={`mb-2 border-l-4 pl-2 text-xs p-1.5 rounded-md truncate ${
+                          isUser
+                            ? "border-blue-300 bg-blue-400/30 text-white"
+                            : "border-gray-400 bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        <span className="font-medium">
+                          {reply.sender?.firstName} {reply.sender?.lastName}
+                        </span>
+                        <div className="truncate">
+                          {reply.text
+                            ? reply.text
+                            : reply.attachment
+                            ? `[Attachment: ${reply.attachment.name}]`
+                            : ""}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Main text */}
                     {msg.text && <span>{msg.text}</span>}
 
                     {/* Attachment */}
@@ -306,7 +356,9 @@ const NewMessagePage: React.FC = () => {
                             href={msg.attachment.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-200 underline break-all"
+                            className={`underline break-all ${
+                              isUser ? "text-blue-200" : "text-blue-500"
+                            }`}
                           >
                             {msg.attachment.name}
                           </a>

@@ -49,6 +49,8 @@ const Form = ({
   useEffect(() => {
     if (replyId) {
       setValue("webhookMessageReplyId", replyId);
+    } else {
+      setValue("webhookMessageReplyId", null);
     }
   }, [replyId]);
   return (

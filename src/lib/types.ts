@@ -31,6 +31,7 @@ export interface Message {
   conversationId: number;
   webhookMessageId: string;
   webhookMessageReplyId: string | null;
+  webhookMessageReply: Message | null;
   createdAt: string;
   updatedAt: string;
 }
