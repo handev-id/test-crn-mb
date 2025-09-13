@@ -1,15 +1,17 @@
 import axios from "axios";
 import { Attachment, Message } from "./types";
 
-const auth = {
-  agent1: `Bearer oat_MQ.LWthS1o4NF9qOHlQMHA3S2VSdVdzX0gwcUd1d1FnX0t2WGQ3NmlsTDU1NjQ2Nzk5NA`,
-  agent2: `Bearer oat_Mg.SjRRNjI3MXRRYlNaTGh6dEsyTHJkaW1nRXpMM25JRWJyY3Q0TWVGODIxMjExNzc0Nzc`,
+export const auth = {
+  agent1: `oat_MQ.TnpkbWpUNzNUVFUzVnNybTV4SVZyUVEzelkxZGFCM3pGblZFeGhmQTI5MjI0ODM3NzY`,
+  admin: `oat_MjM.THVJNnZYWU9Rb1VKVlFiRWRlZzlrb25fRDJPS3NhTG9sV1NSRFRnMjI0MTc2MzYwNTc`,
 };
+
+export const activeAuth = auth.agent1;
 
 export const client = axios.create({
   baseURL: "http://localhost:3333/api/v1.0",
   headers: {
-    Authorization: auth.agent2,
+    Authorization: "Bearer " + activeAuth,
   },
 });
 

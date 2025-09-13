@@ -159,6 +159,24 @@ const NewMessagePage: React.FC = () => {
       }
     );
 
+    socket.on("user-status", (data) => {
+      console.log(data);
+    });
+
+    socket.on("user-conversations-info", (data) => {
+      console.log(data);
+    });
+
+    socket.on("campaign-list-update", (data) => {
+      console.log(data);
+    });
+
+    socket.on("campaign-log-update", (data) => {
+      console.log("CAMPAIGN LOG UPDATE", data);
+    });
+
+    socket.emit("join-campaign-log", 9);
+
     socket.on("conversation-status", (conv: Conversation) => {
       console.log(conv);
       const currentConvs = getValues("conversations");
