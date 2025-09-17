@@ -2,7 +2,7 @@ import axios from "axios";
 import { Attachment, Message } from "./types";
 
 export const auth = {
-  agent1: `oat_MQ.TnpkbWpUNzNUVFUzVnNybTV4SVZyUVEzelkxZGFCM3pGblZFeGhmQTI5MjI0ODM3NzY`,
+  agent1: `oat_Mg.cUd0WVQ1a1Q0V0dIcEpYSzlsaDhKRlVSUy1VcHdBMldBSWkxU1BuQTIxNjI1NjQxNw`,
   admin: `oat_MjM.THVJNnZYWU9Rb1VKVlFiRWRlZzlrb25fRDJPS3NhTG9sV1NSRFRnMjI0MTc2MzYwNTc`,
 };
 

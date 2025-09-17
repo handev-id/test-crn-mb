@@ -171,11 +171,9 @@ const NewMessagePage: React.FC = () => {
       console.log(data);
     });
 
-    socket.on("campaign-log-update", (data) => {
+    socket.on(`campaign-log-update-${9}`, (data) => {
       console.log("CAMPAIGN LOG UPDATE", data);
     });
-
-    socket.emit("join-campaign-log", 9);
 
     socket.on("conversation-status", (conv: Conversation) => {
       console.log(conv);
